@@ -1,0 +1,42 @@
+# Login
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"piyushmishra1597@gmail.com","password":"3pass124"}'
+
+{
+  "message": "OTP sent",
+  "loginSessionId": "zvteo8"
+}
+
+# Verify OTP
+# OTP observed in server logs: 536618
+curl -c cookies.txt -X POST http://localhost:3000/auth/verify-otp \
+  -H "Content-Type: application/json" \
+  -d '{"loginSessionId":"zvteo8","otp":"536618"}'
+
+{
+  "message": "OTP verified",
+  "sessionId": "zvteo8"
+}
+
+# Get Token
+curl -b cookies.txt -X POST http://localhost:3000/auth/token
+
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBpeXVzaG1pc2hyYTE1OTdAZ21haWwuY29tIiwic2Vzc2lvbklkIjoienZ0ZW84IiwiaWF0IjoxNzcwOTYyNDAxLCJleHAiOjE3NzA5NjMzMDF9.zhYDET7SwgNCVOmjylgzh0p-PGFrIf2wczoeRRY8PV4",
+  "expires_in": 900
+}
+
+# Access Protected Route
+curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBpeXVzaG1pc2hyYTE1OTdAZ21haWwuY29tIiwic2Vzc2lvbklkIjoienZ0ZW84IiwiaWF0IjoxNzcwOTYyNDAxLCJleHAiOjE3NzA5NjMzMDF9.zhYDET7SwgNCVOmjylgzh0p-PGFrIf2wczoeRRY8PV4" http://localhost:3000/protected
+
+{
+  "message": "Access granted",
+  "user": {
+    "email": "piyushmishra1597@gmail.com",
+    "sessionId": "zvteo8",
+    "iat": 1770962401,
+    "exp": 1770963301
+  },
+  "success_flag": "FLAG-cGl5dXNobWlzaHJhMTU5N0BnbWFpbC5jb21fQ09NUExFVEVEX0FTU0lHTk1FTlQ="
+}
